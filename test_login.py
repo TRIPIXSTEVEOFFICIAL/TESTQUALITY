@@ -1,41 +1,42 @@
 import pytest
-import time
 from selenium import webdriver
 from selenium.webdriver.common.by import By
+from selenium.webdriver.chrome.options import Options
+import time
+
 
 @pytest.fixture
 def driver():
-    driver = webdriver.Chrome()
-    driver.maximize_window()
+    options = Options()
+    options.add_argument("--start-maximized")
+
+    driver = webdriver.Chrome(options=options)
+    driver.get("https://opensource-demo.orangehrmlive.com/web/index.php/auth/login")
+
+    time.sleep(2)
     yield driver
     driver.quit()
 
-def test_positive_login(driver):
-    driver.get("https://practicetestautomation.com/practice-test-login/")
-    driver.find_element(By.ID, "username").send_keys("student")
-    driver.find_element(By.ID, "password").send_keys("Password123")
-    driver.find_element(By.ID, "submit").click()
-    time.sleep(6)
 
-    success_text = driver.find_element(By.TAG_NAME, "h1").text
-    assert "Logged In Successfully" in success_text
+# Will go to dashboard automatically
+def test_valid_login(driver):
+    driver.find_element(By.NAME, "username").send_keys("Admin")
+    driver.find_element(By.NAME, "password").send_keys("admin123")
+    driver.find_element(By.XPATH, "//button[@type='submit']").click()
 
-def test_negative_username(driver):
-    driver.get("https://practicetestautomation.com/practice-test-login/")
-    driver.find_element(By.ID, "username").send_keys("wrongUser")
-    driver.find_element(By.ID, "password").send_keys("Password123")
-    driver.find_element(By.ID, "submit").click()
-    time.sleep(6)
+    time.sleep(3)
+    assert "dashboard" in driver.current_url.lower()
 
-    error_text = driver.find_element(By.ID, "error").text
-    assert "Your username is invalid!" in error_text
 
-def test_negative_password(driver):
-    driver.get("https://practicetestautomation.com/practice-test-login/")
-    driver.find_element(By.ID, "username").send_keys("student")
-    driver.find_element(By.ID, "password").send_keys("wrongPassword")
-    driver.find_element(By.ID, "submit").click()
-    time.sleep(6)
+# Invalid login will not got to dashboard
+@pytest.mark.parametrize("username,password", [
+    ("Admin", "wrongpass"),
+    ("wronguser", "admin123")
+])
+def test_invalid_login(driver, username, password):
+    driver.find_element(By.NAME, "username").send_keys(username)
+    driver.find_element(By.NAME, "password").send_keys(password)
+    driver.find_element(By.XPATH, "//button[@type='submit']").click()
 
-    error_text = driver.find_element(By.ID, "error").text
-    assert "Your password is invalid!" in error_text
+    time.sleep(3)
+    assert "dashboard" not in driver.current_url.lower()
