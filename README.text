@@ -1,0 +1,55 @@
+OrangeHRM Login Automation Testing
+Project Description
+
+This project contains automated test scripts to validate the login functionality of the OrangeHRM demo website.
+The tests are implemented using Python, Selenium WebDriver, and PyTest.
+
+The automation covers both valid and invalid login scenarios to ensure the authentication system behaves correctly.
+
+Target Application:
+OrangeHRM Demo
+
+Technologies Used
+
+Python 3.x
+Selenium WebDriver
+PyTest
+Google Chrome Browser
+ChromeDriver
+
+Test Coverage
+
+Valid Login Tests:
+
+Login using a valid username and password.
+Verify successful redirection to the dashboard page.
+
+Invalid Login Tests
+
+Negative scenarios covered:
+
+Valid username with invalid password
+Invalid username with valid password
+Invalid username and invalid password
+Empty username and password
+Empty username only
+Empty password only
+
+How to Run the Tests
+
+Install required dependencies:
+
+pip install selenium pytest
+
+Make sure ChromeDriver is installed and added to your system PATH.
+
+Run all tests:
+
+pytest -v
+pytest 
+
+Expected Results
+
+Login using valid credentials should redirect the user to the dashboard page.
+
+Login attempts with invalid or empty credentials should fail and remain on the login page.
